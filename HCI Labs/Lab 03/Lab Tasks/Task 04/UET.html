@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UET Mardan — Redesigned</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:      #0A1628;
+    --blue:      #1355C1;
+    --blue-l:    #1A6BEB;
+    --gold:      #D4A017;
+    --gold-l:    #F5C842;
+    --bg:        #F6F8FC;
+    --surface:   #FFFFFF;
+    --border:    #E3E8F0;
+    --text:      #0A1628;
+    --text2:     #4A5568;
+    --text3:     #8A9AB0;
+    --green:     #0D9E6A;
+    --red:       #E53E3E;
+    --radius:    14px;
+    --shadow:    0 2px 16px rgba(10,22,40,0.08);
+    --shadow-lg: 0 8px 40px rgba(10,22,40,0.13);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); }
+
+  /* ===== TOP BAR ===== */
+  .topbar {
+    background: var(--navy);
+    padding: 7px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.6);
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .topbar a { color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.2s; }
+  .topbar a:hover { color: white; }
+  .topbar-left { display: flex; gap: 20px; align-items: center; }
+  .topbar-right { display: flex; gap: 16px; align-items: center; }
+  .topbar-right a {
+    background: rgba(255,255,255,0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    transition: background 0.2s;
+  }
+  .topbar-right a:hover { background: rgba(255,255,255,0.2); color: white; }
+
+  /* ===== NAVBAR ===== */
+  nav {
+    background: white;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    height: 72px;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    gap: 24px;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
+  .nav-logo {
+    width: 48px; height: 48px;
+    background: var(--navy);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+  }
+  .nav-brand-text .uni-name {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+  }
+  .nav-brand-text .uni-short {
+    font-size: 0.72rem;
+    color: var(--text2);
+    font-weight: 600;
+  }
+  .nav-links { display: flex; align-items: center; gap: 2px; flex: 1; justify-content: center; }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--text2);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-links a:hover { color: var(--blue); background: #EEF4FF; }
+  .nav-links a.active { color: var(--blue); background: #EEF4FF; }
+  .nav-links a.admissions-link {
+    color: var(--blue);
+    background: #EEF4FF;
+    font-weight: 700;
+    border: 1.5px solid #C5D8FF;
+  }
+  .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .apply-btn {
+    padding: 9px 20px;
+    background: var(--blue);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .apply-btn:hover { background: var(--blue-l); box-shadow: 0 4px 16px rgba(19,85,193,0.35); }
+
+  /* ===== PAGE ROUTING ===== */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== HERO ===== */
+  .hero {
+    background: linear-gradient(160deg, var(--navy) 0%, #0D2550 60%, #163A7A 100%);
+    padding: 64px 48px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    min-height: 480px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,160,23,0.12) 0%, transparent 70%);
+    top: -150px; right: -100px;
+    pointer-events: none;
+  }
+  .hero-text { padding-bottom: 48px; position: relative; z-index: 1; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(212,160,23,0.18);
+    border: 1px solid rgba(212,160,23,0.4);
+    color: var(--gold-l);
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: white;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--gold-l); }
+  .hero-sub { color: rgba(255,255,255,0.65); font-size: 1rem; line-height: 1.7; margin-bottom: 32px; }
+
+  /* THE KEY FIX: Big visible search on homepage */
+  .hero-search {
+    background: white;
+    border-radius: 14px;
+    padding: 6px 6px 6px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    max-width: 520px;
+  }
+  .hero-search input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: none;
+  }
+  .hero-search input::placeholder { color: var(--text3); }
+  .search-suggestions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .search-pill {
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.75);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.74rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .search-pill:hover { background: rgba(255,255,255,0.22); color: white; }
+  .search-btn {
+    padding: 11px 20px;
+    background: var(--blue);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .search-btn:hover { background: var(--blue-l); }
+
+  .hero-stats {
+    display: flex; gap: 28px;
+    margin-top: 32px;
+  }
+  .stat { text-align: left; }
+  .stat .num { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 700; color: var(--gold-l); }
+  .stat .lbl { font-size: 0.72rem; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+
+  /* Hero right: Quick access cards */
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 40px;
+    position: relative; z-index: 1;
+  }
+  .hero-right-title {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .quick-card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.22s;
+    text-decoration: none;
+  }
+  .quick-card:hover { background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.25); transform: translateX(4px); }
+  .quick-card .qc-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .quick-card .qc-label { color: white; font-weight: 700; font-size: 0.88rem; }
+  .quick-card .qc-sub   { color: rgba(255,255,255,0.5); font-size: 0.74rem; margin-top: 2px; }
+  .quick-card .arrow { margin-left: auto; color: rgba(255,255,255,0.35); font-size: 0.9rem; }
+  .qc-new {
+    background: var(--green);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 6px;
+    text-transform: uppercase;
+  }
+
+  /* ===== NOTICE TICKER ===== */
+  .notice-bar {
+    background: #FFFBEB;
+    border-bottom: 1px solid #FDE68A;
+    padding: 10px 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    overflow: hidden;
+  }
+  .notice-tag {
+    background: var(--gold);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .notice-scroll {
+    display: flex;
+    gap: 40px;
+    overflow: hidden;
+    flex: 1;
+  }
+  .notice-item {
+    white-space: nowrap;
+    font-size: 0.82rem;
+    color: var(--text2);
+    cursor: pointer;
+    transition: color 0.2s;
+    flex-shrink: 0;
+  }
+  .notice-item:hover { color: var(--blue); }
+  .notice-item span { color: var(--blue); font-weight: 700; }
+
+  /* ===== SECTION ===== */
+  .section { padding: 56px 48px; }
+  .section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 28px; }
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .section-sub { color: var(--text2); font-size: 0.88rem; margin-top: 4px; }
+  .see-all {
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 4px;
+    white-space: nowrap;
+  }
+  .see-all:hover { text-decoration: underline; }
+
+  /* ===== ADMISSION OVERVIEW TABS ===== */
+  .admission-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0;
+  }
+  .tab-btn {
+    padding: 10px 22px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--blue); }
+  .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ===== PROGRAM CARDS ===== */
+  .programs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .prog-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.22s;
+    position: relative;
+    overflow: hidden;
+  }
+  .prog-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--blue);
+    border-radius: 4px 0 0 4px;
+    transform: scaleY(0);
+    transition: transform 0.2s;
+  }
+  .prog-card:hover { border-color: var(--blue); box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+  .prog-card:hover::before { transform: scaleY(1); }
+  .prog-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+  }
+  .prog-name { font-weight: 700; font-size: 0.92rem; color: var(--navy); margin-bottom: 4px; }
+  .prog-meta { font-size: 0.76rem; color: var(--text2); margin-bottom: 12px; line-height: 1.5; }
+  .prog-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .prog-tag {
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+  .prog-tag.seats   { background: #EEF4FF; color: var(--blue); }
+  .prog-tag.year    { background: #F0FFF4; color: var(--green); }
+  .prog-tag.open    { background: #F0FFF4; color: var(--green); }
+  .prog-tag.closed  { background: #FFF5F5; color: var(--red); }
+  .prog-tag.merit   { background: #FFFBEB; color: var(--gold); }
+
+  /* ===== ADMISSION INFO CARDS ===== */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .info-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    transition: all 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+  .info-card:hover { border-color: var(--blue); box-shadow: var(--shadow); }
+  .info-card .ic-icon { font-size: 1.6rem; margin-bottom: 10px; }
+  .info-card .ic-title { font-weight: 700; font-size: 0.9rem; color: var(--navy); margin-bottom: 4px; }
+  .info-card .ic-desc  { font-size: 0.78rem; color: var(--text2); line-height: 1.6; }
+  .info-card .ic-link  { color: var(--blue); font-size: 0.78rem; font-weight: 700; margin-top: 10px; display: block; }
+
+  /* ===== TIMELINE ===== */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 12px; bottom: 12px;
+    width: 2px;
+    background: var(--border);
+  }
+  .tl-item {
+    position: relative;
+    padding: 0 0 20px 24px;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -8px; top: 6px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px var(--blue);
+  }
+  .tl-item.done::before { background: var(--green); box-shadow: 0 0 0 2px var(--green); }
+  .tl-item.current::before { background: var(--gold); box-shadow: 0 0 0 2px var(--gold); animation: pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 2px var(--gold)} 50%{box-shadow:0 0 0 5px rgba(212,160,23,0.3)} }
+  .tl-date { font-size: 0.74rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .tl-title { font-weight: 700; font-size: 0.88rem; color: var(--navy); margin: 3px 0; }
+  .tl-sub { font-size: 0.78rem; color: var(--text2); }
+
+  /* ===== MS DEPARTMENTS GRID ===== */
+  .dept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 14px;
+  }
+  .dept-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all 0.22s;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .dept-card:hover { border-color: var(--blue); box-shadow: var(--shadow); transform: translateY(-2px); }
+  .dept-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+  .dept-info .dept-name { font-weight: 700; font-size: 0.88rem; color: var(--navy); }
+  .dept-info .dept-seats { font-size: 0.75rem; color: var(--text2); margin-top: 3px; }
+  .dept-info .dept-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .dept-status.open   { background: #F0FFF4; color: var(--green); }
+  .dept-status.closed { background: #FFF5F5; color: var(--red); }
+
+  /* ===== SEARCH RESULTS PANEL ===== */
+  .search-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0; right: 0;
+    background: white;
+    border-radius: 14px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    z-index: 300;
+    max-height: 340px;
+    overflow-y: auto;
+  }
+  .search-panel.open { display: block; }
+  .sp-section { padding: 10px 16px 4px; font-size: 0.72rem; font-weight: 800; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .sp-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .sp-item:hover { background: var(--bg); }
+  .sp-item .sp-icon { font-size: 1.1rem; }
+  .sp-item .sp-label { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+  .sp-item .sp-sub   { font-size: 0.74rem; color: var(--text2); margin-top: 1px; }
+
+  /* ===== STATS SECTION ===== */
+  .stats-section {
+    background: var(--navy);
+    padding: 48px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    border-top: 4px solid var(--gold);
+  }
+  .stat-block {
+    padding: 24px 32px;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.08);
+  }
+  .stat-block:last-child { border-right: none; }
+  .stat-block .s-num { font-family: 'Fraunces', serif; font-size: 2.5rem; font-weight: 700; color: var(--gold-l); }
+  .stat-block .s-lbl { font-size: 0.8rem; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+  /* ===== ADMISSION PAGE SPECIFIC ===== */
+  .admission-hero {
+    background: linear-gradient(135deg, #EEF4FF 0%, #E8F3FF 100%);
+    padding: 48px 48px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .admission-hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .admission-hero p { color: var(--text2); font-size: 0.95rem; max-width: 600px; line-height: 1.7; }
+  .breadcrumb { display: flex; align-items: center; gap: 6px; margin-bottom: 14px; font-size: 0.78rem; color: var(--text3); }
+  .breadcrumb a { color: var(--blue); text-decoration: none; font-weight: 600; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  /* ===== SIDE + CONTENT LAYOUT (ADMISSION) ===== */
+  .admission-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 32px;
+    padding: 32px 48px;
+    align-items: start;
+  }
+  .side-nav {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    position: sticky;
+    top: 84px;
+  }
+  .side-nav-header {
+    background: var(--navy);
+    padding: 14px 18px;
+    color: white;
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .side-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 18px;
+    text-decoration: none;
+    color: var(--text2);
+    font-size: 0.84rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.18s;
+    cursor: pointer;
+  }
+  .side-nav-link:hover { background: #EEF4FF; color: var(--blue); }
+  .side-nav-link.active { background: #EEF4FF; color: var(--blue); border-left: 3px solid var(--blue); }
+  .side-nav-link:last-child { border-bottom: none; }
+  .side-nav-link .sn-icon { font-size: 1rem; }
+
+  /* ===== DEGREE SWITCH ===== */
+  .degree-switch {
+    display: inline-flex;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 24px;
+  }
+  .ds-btn {
+    padding: 8px 24px;
+    border: none;
+    border-radius: 7px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text2);
+    background: none;
+  }
+  .ds-btn.active { background: white; color: var(--blue); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.6);
+    padding: 48px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+  }
+  footer h4 { color: white; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+  footer ul { list-style: none; }
+  footer ul li { margin-bottom: 9px; }
+  footer ul a { color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.82rem; transition: color 0.2s; }
+  footer ul a:hover { color: white; }
+  .footer-logo { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 8px; }
+  .footer-logo span { color: var(--gold-l); }
+  .footer-desc { font-size: 0.82rem; line-height: 1.7; margin-bottom: 16px; }
+  .footer-bottom {
+    background: rgba(0,0,0,0.3);
+    padding: 14px 48px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.35);
+  }
+
+  /* Animations */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  .fade-up { animation: fadeUp 0.45s ease forwards; }
+  .delay-1 { animation-delay: 0.08s; opacity: 0; }
+  .delay-2 { animation-delay: 0.16s; opacity: 0; }
+  .delay-3 { animation-delay: 0.24s; opacity: 0; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span>📞 +92-937-845050</span>
+    <span>📧 info@uetmardan.edu.pk</span>
+    <span>📍 Mardan, Khyber Pakhtunkhwa, Pakistan</span>
+  </div>
+  <div class="topbar-right">
+    <a href="#">Alumni</a>
+    <a href="#">E-Learning</a>
+    <a href="#">Downloads</a>
+    <a href="#">Urdu</a>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-brand" onclick="showPage('home')" style="cursor:pointer">
+    <div class="nav-logo">🎓</div>
+    <div class="nav-brand-text">
+      <div class="uni-name">UET Mardan</div>
+      <div class="uni-short">University of Engineering & Technology</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a onclick="showPage('home')" style="cursor:pointer" class="active">Home</a>
+    <a onclick="showPage('admissions')" style="cursor:pointer" class="admissions-link">Admissions</a>
+    <a style="cursor:pointer">Academics</a>
+    <a style="cursor:pointer">Research</a>
+    <a style="cursor:pointer">Departments</a>
+    <a style="cursor:pointer">Campus Life</a>
+    <a style="cursor:pointer">About</a>
+  </div>
+  <div class="nav-right">
+    <a onclick="showPage('admissions')" class="apply-btn" style="cursor:pointer">Apply Now →</a>
+  </div>
+</nav>
+
+<!-- ===================== HOME PAGE ===================== -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-text fade-up">
+      <div class="hero-badge">🏆 Ranked #1 in KPK for Engineering</div>
+      <h1>Engineer Your <span>Future</span> at UET Mardan</h1>
+      <p class="hero-sub">Pakistan's leading engineering university offering BS, MS & PhD programs across 12 departments.</p>
+
+      <!-- FIX #1: Prominent search bar directly on homepage -->
+      <div style="position:relative">
+        <div class="hero-search">
+          <span style="font-size:1.1rem">🔍</span>
+          <input type="text" id="heroSearch" placeholder="Search programs, admissions, departments..." oninput="handleSearch(this.value)" onfocus="handleSearch(this.value)">
+          <button class="search-btn">Search</button>
+        </div>
+        <!-- Smart search panel -->
+        <div class="search-panel" id="searchPanel">
+          <div class="sp-section">Quick Access</div>
+          <div class="sp-item" onclick="showPage('admissions')">
+            <span class="sp-icon">📋</span>
+            <div><div class="sp-label">Masters (MS) Admissions</div><div class="sp-sub">Application open · 15 programs available</div></div>
+          </div>
+          <div class="sp-item" onclick="showPage('admissions')">
+            <span class="sp-icon">🎓</span>
+            <div><div class="sp-label">Undergraduate (BS) Admissions</div><div class="sp-sub">NTS/HEC criteria · Fall 2025</div></div>
+          </div>
+          <div class="sp-item" onclick="showPage('admissions')">
+            <span class="sp-icon">📅</span>
+            <div><div class="sp-label">Admission Schedule 2025</div><div class="sp-sub">Key dates and deadlines</div></div>
+          </div>
+          <div class="sp-item" onclick="showPage('admissions')">
+            <span class="sp-icon">💰</span>
+            <div><div class="sp-label">Fee Structure</div><div class="sp-sub">Semester-wise breakdown</div></div>
+          </div>
+          <div class="sp-section">Popular Departments</div>
+          <div class="sp-item">
+            <span class="sp-icon">💻</span>
+            <div><div class="sp-label">Computer Science (CS)</div><div class="sp-sub">MS CS · 30 seats</div></div>
+          </div>
+          <div class="sp-item">
+            <span class="sp-icon">⚡</span>
+            <div><div class="sp-label">Electrical Engineering (EE)</div><div class="sp-sub">MS EE · 25 seats</div></div>
+          </div>
+          <div class="sp-item">
+            <span class="sp-icon">🏗️</span>
+            <div><div class="sp-label">Civil Engineering (CE)</div><div class="sp-sub">MS CE · 20 seats</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-suggestions">
+        <span class="search-pill" onclick="showPage('admissions')">MS Admissions</span>
+        <span class="search-pill" onclick="showPage('admissions')">Fee Structure</span>
+        <span class="search-pill" onclick="showPage('admissions')">Merit List</span>
+        <span class="search-pill">Scholarships</span>
+        <span class="search-pill">Apply Online</span>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat"><div class="num">12+</div><div class="lbl">Departments</div></div>
+        <div class="stat"><div class="num">8,000+</div><div class="lbl">Students</div></div>
+        <div class="stat"><div class="num">95%</div><div class="lbl">Placement Rate</div></div>
+      </div>
+    </div>
+
+    <!-- QUICK ACCESS CARDS (RIGHT SIDE) -->
+    <div class="hero-right fade-up delay-1">
+      <div class="hero-right-title">Quick Access</div>
+      <a class="quick-card" onclick="showPage('admissions')" style="cursor:pointer">
+        <div class="qc-icon" style="background:#EEF4FF">📋</div>
+        <div>
+          <div class="qc-label">Admissions Portal <span class="qc-new">Open</span></div>
+          <div class="qc-sub">BS · MS · PhD · Fall 2025</div>
+        </div>
+        <div class="arrow">›</div>
+      </a>
+      <a class="quick-card" onclick="showPage('admissions')" style="cursor:pointer">
+        <div class="qc-icon" style="background:#F0FFF4">🌐</div>
+        <div>
+          <div class="qc-label">Apply Online</div>
+          <div class="qc-sub">Submit your application now</div>
+        </div>
+        <div class="arrow">›</div>
+      </a>
+      <a class="quick-card" style="cursor:pointer">
+        <div class="qc-icon" style="background:#FFFBEB">📅</div>
+        <div>
+          <div class="qc-label">Admission Schedule</div>
+          <div class="qc-sub">Dates & deadlines 2025</div>
+        </div>
+        <div class="arrow">›</div>
+      </a>
+      <a class="quick-card" style="cursor:pointer">
+        <div class="qc-icon" style="background:#FFF5F5">💰</div>
+        <div>
+          <div class="qc-label">Fee Structure</div>
+          <div class="qc-sub">Semester-wise breakdown</div>
+        </div>
+        <div class="arrow">›</div>
+      </a>
+      <a class="quick-card" style="cursor:pointer">
+        <div class="qc-icon" style="background:#F5F0FF">🏅</div>
+        <div>
+          <div class="qc-label">Scholarships</div>
+          <div class="qc-sub">Merit & need-based aid</div>
+        </div>
+        <div class="arrow">›</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- NOTICE BAR -->
+  <div class="notice-bar">
+    <span class="notice-tag">📢 Notices</span>
+    <div class="notice-scroll">
+      <span class="notice-item"><span>NEW:</span> MS/PhD Admissions Fall 2025 now open — Apply by July 31, 2025</span>
+      <span class="notice-item"><span>RESULT:</span> BS Engineering Merit List 2025 published — Check Now</span>
+      <span class="notice-item"><span>DATE:</span> Orientation for new students — September 10, 2025</span>
+      <span class="notice-item"><span>INFO:</span> HEC scholarship applications open — Deadline Aug 15</span>
+    </div>
+  </div>
+
+  <!-- ADMISSIONS OVERVIEW ON HOMEPAGE -->
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">🎓 Admissions 2025</div>
+        <div class="section-sub">Currently accepting applications for all programs</div>
+      </div>
+      <a onclick="showPage('admissions')" class="see-all" style="cursor:pointer">View Full Admission Portal →</a>
+    </div>
+
+    <!-- Degree tabs right on homepage -->
+    <div class="admission-tabs">
+      <button class="tab-btn active" onclick="switchTab('ug', this)">Undergraduate (BS)</button>
+      <button class="tab-btn" onclick="switchTab('pg', this)">Masters (MS)</button>
+      <button class="tab-btn" onclick="switchTab('phd', this)">PhD</button>
+    </div>
+
+    <!-- UG Programs -->
+    <div class="tab-content active" id="tab-ug">
+      <div class="programs-grid">
+        <div class="prog-card"><div class="prog-icon" style="background:#EEF4FF">💻</div><div class="prog-name">Computer Science</div><div class="prog-meta">BS CS · 4 years · Mardan Campus</div><div class="prog-tags"><span class="prog-tag seats">120 Seats</span><span class="prog-tag open">Open</span></div></div>
+        <div class="prog-card"><div class="prog-icon" style="background:#FFF0E0">⚡</div><div class="prog-name">Electrical Engineering</div><div class="prog-meta">BS EE · 4 years · Mardan Campus</div><div class="prog-tags"><span class="prog-tag seats">100 Seats</span><span class="prog-tag open">Open</span></div></div>
+        <div class="prog-card"><div class="prog-icon" style="background:#F0FFF4">🏗️</div><div class="prog-name">Civil Engineering</div><div class="prog-meta">BS CE · 4 years · Mardan Campus</div><div class="prog-tags"><span class="prog-tag seats">80 Seats</span><span class="prog-tag open">Open</span></div></div>
+        <div class="prog-card"><div class="prog-icon" style="background:#F5F0FF">⚙️</div><div class="prog-name">Mechanical Engineering</div><div class="prog-meta">BS ME · 4 years · Mardan Campus</div><div class="prog-tags"><span class="prog-tag seats">80 Seats</span><span class="prog-tag open">Open</span></div></div>
+        <div class="prog-card"><div class="prog-icon" style="background:#FFFBEB">🏭</div><div class="prog-name">Industrial Engineering</div><div class="prog-meta">BS IE · 4 years · Mardan Campus</div><div class="prog-tags"><span class="prog-tag seats">60 Seats</span><span class="prog-tag merit">Merit Based</span></div></div>
+        <div class="prog-card"><div class="prog-icon" style="background:#FFF5F5">🔬</div><div class="prog-name">Chemical Engineering</div><div class="prog-meta">BS ChE · 4 years · Mardan Campus</div><div class="prog-tags"><span class="prog-tag seats">60 Seats</span><span class="prog-tag open">Open</span></div></div>
+      </div>
+    </div>
+
+    <!-- MS Programs — FIX: clearly categorized -->
+    <div class="tab-content" id="tab-pg">
+      <div class="programs-grid">
+        <div class="prog-card"><div class="prog-icon" style="background:#EEF4FF">💻</div><div class="prog-name">MS Computer Science</div><div class="prog-meta">2 years · Thesis/Course · Research areas: AI, Networks, SE</div><div class="prog-tags"><span class="prog-tag seats">30 Seats</span><span class="prog-tag open">Open</span></div></div>
+        <div class="prog-card"><div class="prog-icon" style="background:#FFF0E0">⚡</div><div class="prog-name">MS Electrical Engineering</div><div class="prog-meta">2 years · Power Systems, Telecom, Electronics</div><div class="prog-tags"><span class="prog-tag seats">25 Seats</span><span class="prog-tag open">Open</span></div></div>
+        <div class="prog-card"><div class="prog-icon" style="background:#F0FFF4">🏗️</div><div class="prog-name">MS Civil Engineering</div><div class="prog-meta">2 years · Structures, Geotechnics, Transportation</div><div class="prog-tags"><span class="prog-tag seats">20 Seats</span><span class="prog-tag open">Open</span></div></div>
+        <div class="prog-card"><div class="prog-icon" style="background:#F5F0FF">⚙️</div><div class="prog-name">MS Mechanical Engineering</div><div class="prog-meta">2 years · Thermodynamics, Manufacturing, CAD/CAM</div><div class="prog-tags"><span class="prog-tag seats">20 Seats</span><span class="prog-tag open">Open</span></div></div>
+        <div class="prog-card"><div class="prog-icon" style="background:#FFFBEB">🏭</div><div class="prog-name">MS Industrial Engineering</div><div class="prog-meta">2 years · Operations Research, Supply Chain</div><div class="prog-tags"><span class="prog-tag seats">18 Seats</span><span class="prog-tag merit">Merit Based</span></div></div>
+        <div class="prog-card"><div class="prog-icon" style="background:#FFF5F5">🔬</div><div class="prog-name">MS Chemical Engineering</div><div class="prog-meta">2 years · Process Design, Environmental Eng.</div><div class="prog-tags"><span class="prog-tag seats">15 Seats</span><span class="prog-tag open">Open</span></div></div>
+      </div>
+    </div>
+
+    <!-- PhD -->
+    <div class="tab-content" id="tab-phd">
+      <div class="programs-grid">
+        <div class="prog-card"><div class="prog-icon" style="background:#EEF4FF">💻</div><div class="prog-name">PhD Computer Science</div><div class="prog-meta">3–5 years · Full Research Program</div><div class="prog-tags"><span class="prog-tag seats">10 Seats</span><span class="prog-tag merit">Fully Funded</span></div></div>
+        <div class="prog-card"><div class="prog-icon" style="background:#FFF0E0">⚡</div><div class="prog-name">PhD Electrical Engineering</div><div class="prog-meta">3–5 years · Full Research Program</div><div class="prog-tags"><span class="prog-tag seats">8 Seats</span><span class="prog-tag merit">Fully Funded</span></div></div>
+        <div class="prog-card"><div class="prog-icon" style="background:#F0FFF4">🏗️</div><div class="prog-name">PhD Civil Engineering</div><div class="prog-meta">3–5 years · Full Research Program</div><div class="prog-tags"><span class="prog-tag seats">8 Seats</span><span class="prog-tag open">Open</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-section">
+    <div class="stat-block"><div class="s-num">25+</div><div class="s-lbl">Years of Excellence</div></div>
+    <div class="stat-block"><div class="s-num">500+</div><div class="s-lbl">Faculty Members</div></div>
+    <div class="stat-block"><div class="s-num">40+</div><div class="s-lbl">Research Labs</div></div>
+    <div class="stat-block"><div class="s-num">12,000+</div><div class="s-lbl">Alumni Worldwide</div></div>
+  </div>
+
+</div><!-- /home -->
+
+<!-- ===================== ADMISSIONS PAGE ===================== -->
+<div class="page" id="page-admissions">
+
+  <div class="admission-hero">
+    <div class="breadcrumb"><a onclick="showPage('home')" style="cursor:pointer">Home</a> › <span>Admissions</span></div>
+    <h1>Admissions — Fall 2025</h1>
+    <p>Applications are open for Undergraduate, Masters & PhD programs. Choose your level below to view programs, eligibility, and apply directly.</p>
+  </div>
+
+  <div class="admission-layout">
+    <!-- SIDEBAR NAV (FIX: all admission links in one place, no hunting) -->
+    <div class="side-nav">
+      <div class="side-nav-header">Admission Menu</div>
+      <a class="side-nav-link active"><span class="sn-icon">🏠</span> Overview</a>
+      <a class="side-nav-link"><span class="sn-icon">🌐</span> Apply Online</a>
+      <a class="side-nav-link"><span class="sn-icon">📋</span> Application Process</a>
+      <a class="side-nav-link"><span class="sn-icon">📅</span> Admission Schedule</a>
+      <a class="side-nav-link"><span class="sn-icon">📢</span> Admission Notice</a>
+      <a class="side-nav-link"><span class="sn-icon">✅</span> Eligibility Criteria</a>
+      <a class="side-nav-link"><span class="sn-icon">💰</span> Fee Structure</a>
+      <a class="side-nav-link"><span class="sn-icon">📊</span> Merit List</a>
+      <a class="side-nav-link"><span class="sn-icon">📖</span> Prospectus</a>
+      <a class="side-nav-link"><span class="sn-icon">🏅</span> Scholarships</a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div>
+      <!-- DEGREE LEVEL SWITCHER (UG / PG) -->
+      <div class="degree-switch">
+        <button class="ds-btn active" onclick="switchDegree('ug', this)">🎓 Undergraduate (BS)</button>
+        <button class="ds-btn" onclick="switchDegree('ms', this)">📘 Masters (MS)</button>
+        <button class="ds-btn" onclick="switchDegree('phd', this)">🔬 PhD</button>
+      </div>
+
+      <!-- INFO QUICK LINKS -->
+      <div class="info-grid">
+        <a class="info-card">
+          <div class="ic-icon">📅</div>
+          <div class="ic-title">Admission Schedule</div>
+          <div class="ic-desc">Form submission: June 1 – July 31<br>Merit list: August 15<br>Classes begin: September 10</div>
+          <span class="ic-link">View Full Schedule →</span>
+        </a>
+        <a class="info-card">
+          <div class="ic-icon">✅</div>
+          <div class="ic-title">Eligibility Criteria</div>
+          <div class="ic-desc">BS: 60% FSc (Pre-Engineering)<br>MS: 16-year BS degree, CGPA 2.5+<br>PhD: MS degree, CGPA 3.0+</div>
+          <span class="ic-link">View Details →</span>
+        </a>
+        <a class="info-card">
+          <div class="ic-icon">💰</div>
+          <div class="ic-title">Fee Structure</div>
+          <div class="ic-desc">BS: ~PKR 45,000/semester<br>MS: ~PKR 55,000/semester<br>Need-based waivers available</div>
+          <span class="ic-link">Download PDF →</span>
+        </a>
+      </div>
+
+      <!-- ADMISSION TIMELINE -->
+      <div class="section" style="padding: 0 0 32px 0">
+        <div class="section-title" style="font-size:1.3rem; margin-bottom:18px">📅 Admission Timeline 2025</div>
+        <div class="timeline">
+          <div class="tl-item done">
+            <div class="tl-date">May 15, 2025</div>
+            <div class="tl-title">Admission Notice Published</div>
+            <div class="tl-sub">Official gazette and university website</div>
+          </div>
+          <div class="tl-item done">
+            <div class="tl-date">June 1, 2025</div>
+            <div class="tl-title">Online Applications Open</div>
+            <div class="tl-sub">Apply at admissions.uetmardan.edu.pk</div>
+          </div>
+          <div class="tl-item current">
+            <div class="tl-date">Now → July 31, 2025</div>
+            <div class="tl-title">⚡ Application Window — OPEN NOW</div>
+            <div class="tl-sub">Submit your form before the deadline</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">August 15, 2025</div>
+            <div class="tl-title">Merit List Published</div>
+            <div class="tl-sub">1st merit list on university portal</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">August 25, 2025</div>
+            <div class="tl-title">Fee Submission Deadline</div>
+            <div class="tl-sub">Selected candidates must pay within 7 days</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-date">September 10, 2025</div>
+            <div class="tl-title">Orientation & Classes Begin</div>
+            <div class="tl-sub">Welcome to UET Mardan!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MS PROGRAMS — clearly listed (FIX: no more hunting) -->
+      <div id="ms-dept-section" style="display:none">
+        <div class="section-title" style="font-size:1.3rem;margin-bottom:6px">📘 MS Programs — All Departments</div>
+        <p style="color:var(--text2);font-size:0.85rem;margin-bottom:20px">Click any department to view curriculum, eligibility, and apply directly.</p>
+        <div class="dept-grid">
+          <div class="dept-card"><div class="dept-icon" style="background:#EEF4FF">💻</div><div class="dept-info"><div class="dept-name">MS Computer Science</div><div class="dept-seats">30 seats · Thesis / Course</div><span class="dept-status open">Open</span></div></div>
+          <div class="dept-card"><div class="dept-icon" style="background:#FFF0E0">⚡</div><div class="dept-info"><div class="dept-name">MS Electrical Engineering</div><div class="dept-seats">25 seats · Power · Telecom</div><span class="dept-status open">Open</span></div></div>
+          <div class="dept-card"><div class="dept-icon" style="background:#F0FFF4">🏗️</div><div class="dept-info"><div class="dept-name">MS Civil Engineering</div><div class="dept-seats">20 seats · Structures · Geo</div><span class="dept-status open">Open</span></div></div>
+          <div class="dept-card"><div class="dept-icon" style="background:#F5F0FF">⚙️</div><div class="dept-info"><div class="dept-name">MS Mechanical Engineering</div><div class="dept-seats">20 seats · Thermal · Mfg</div><span class="dept-status open">Open</span></div></div>
+          <div class="dept-card"><div class="dept-icon" style="background:#FFFBEB">🏭</div><div class="dept-info"><div class="dept-name">MS Industrial Engineering</div><div class="dept-seats">18 seats · Operations Research</div><span class="dept-status open">Open</span></div></div>
+          <div class="dept-card"><div class="dept-icon" style="background:#FFF5F5">🔬</div><div class="dept-info"><div class="dept-name">MS Chemical Engineering</div><div class="dept-seats">15 seats · Process · Env</div><span class="dept-status open">Open</span></div></div>
+          <div class="dept-card"><div class="dept-icon" style="background:#F0F9FF">🌐</div><div class="dept-info"><div class="dept-name">MS Software Engineering</div><div class="dept-seats">25 seats · Agile · Cloud</div><span class="dept-status open">Open</span></div></div>
+          <div class="dept-card"><div class="dept-icon" style="background:#FFFFF0">🧮</div><div class="dept-info"><div class="dept-name">MS Mathematics</div><div class="dept-seats">20 seats · Applied Math</div><span class="dept-status open">Open</span></div></div>
+          <div class="dept-card"><div class="dept-icon" style="background:#FFF0FF">🔭</div><div class="dept-info"><div class="dept-name">MS Physics</div><div class="dept-seats">15 seats · Solid State · Optics</div><span class="dept-status open">Open</span></div></div>
+        </div>
+      </div>
+
+    </div><!-- /main content -->
+  </div><!-- /admission-layout -->
+</div><!-- /admissions -->
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">UET <span>Mardan</span></div>
+    <p class="footer-desc">University of Engineering & Technology, Mardan — Committed to excellence in engineering education, research, and innovation since 1995.</p>
+    <p style="font-size:0.78rem">📍 Mardan, KPK, Pakistan &nbsp;|&nbsp; 📞 +92-937-845050</p>
+  </div>
+  <div>
+    <h4>Admissions</h4>
+    <ul>
+      <li><a onclick="showPage('admissions')" style="cursor:pointer">Apply Online</a></li>
+      <li><a href="#">Admission Notice</a></li>
+      <li><a href="#">Fee Structure</a></li>
+      <li><a href="#">Merit List</a></li>
+      <li><a href="#">Scholarships</a></li>
+      <li><a href="#">Prospectus</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Academics</h4>
+    <ul>
+      <li><a href="#">Departments</a></li>
+      <li><a href="#">BS Programs</a></li>
+      <li><a href="#">MS Programs</a></li>
+      <li><a href="#">PhD Programs</a></li>
+      <li><a href="#">Academic Calendar</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Campus</h4>
+    <ul>
+      <li><a href="#">E-Learning (LMS)</a></li>
+      <li><a href="#">Library</a></li>
+      <li><a href="#">Research</a></li>
+      <li><a href="#">Student Portal</a></li>
+      <li><a href="#">Alumni</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2025 University of Engineering & Technology, Mardan. All Rights Reserved.</span>
+  <span>HEC Recognized · ISO 9001:2015 Certified</span>
+</div>
+
+<script>
+  // Page routing
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Homepage program tabs
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.admission-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+  }
+
+  // Admissions page degree switch
+  function switchDegree(type, btn) {
+    document.querySelectorAll('.ds-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('ms-dept-section').style.display = (type === 'ms') ? 'block' : 'none';
+  }
+
+  // Search panel
+  function handleSearch(val) {
+    const panel = document.getElementById('searchPanel');
+    panel.classList.toggle('open', val.length >= 0);
+  }
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.hero-search') && !e.target.closest('#searchPanel')) {
+      document.getElementById('searchPanel')?.classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stanford University — Admissions Redesigned</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@300;400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cardinal:   #8C1515;
+    --cardinal-d: #6E0F0F;
+    --cardinal-l: #B83A3A;
+    --gold:       #B26F16;
+    --gold-l:     #DAAA5D;
+    --sand:       #F4ECD8;
+    --bg:         #FAFAF8;
+    --surface:    #FFFFFF;
+    --navy:       #1C2B4A;
+    --text:       #1A1A1A;
+    --text2:      #555555;
+    --text3:      #888888;
+    --border:     #E5E0D8;
+    --border-l:   #F0EBE0;
+    --green:      #2D6A4F;
+    --teal:       #0A6E82;
+    --radius:     10px;
+    --shadow:     0 2px 16px rgba(0,0,0,0.07);
+    --shadow-lg:  0 8px 40px rgba(0,0,0,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+
+  /* ===== TOP UTILITY BAR ===== */
+  .utility-bar {
+    background: var(--cardinal);
+    padding: 6px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.73rem;
+    color: rgba(255,255,255,0.75);
+  }
+  .utility-bar a { color: rgba(255,255,255,0.75); text-decoration: none; margin-left: 20px; transition: color 0.2s; }
+  .utility-bar a:hover { color: white; }
+
+  /* ===== NAVBAR ===== */
+  nav {
+    background: white;
+    padding: 0 48px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .nav-brand { display: flex; align-items: center; gap: 13px; cursor: pointer; flex-shrink: 0; text-decoration: none; }
+  .nav-seal {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--cardinal);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    color: white;
+    flex-shrink: 0;
+  }
+  .brand-text .univ { font-family: 'Source Serif 4', serif; font-size: 1.15rem; font-weight: 700; color: var(--cardinal); line-height: 1.1; }
+  .brand-text .loc  { font-size: 0.72rem; color: var(--text3); letter-spacing: 0.04em; }
+  .nav-links { display: flex; gap: 2px; flex: 1; }
+  .nav-links a {
+    text-decoration: none; color: var(--text2); font-weight: 500; font-size: 0.85rem;
+    padding: 8px 14px; border-radius: 6px; transition: all 0.18s; white-space: nowrap;
+  }
+  .nav-links a:hover { color: var(--cardinal); background: #FDF5F5; }
+  .nav-links a.active { color: var(--cardinal); font-weight: 600; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .nav-search {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg); border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 7px 14px; min-width: 220px;
+    transition: border-color 0.2s;
+  }
+  .nav-search:focus-within { border-color: var(--cardinal); }
+  .nav-search input { border: none; background: none; outline: none; font-family: 'Inter', sans-serif; font-size: 0.84rem; color: var(--text); width: 100%; }
+  .apply-cta {
+    padding: 9px 22px; background: var(--cardinal); color: white; border: none;
+    border-radius: 8px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.85rem;
+    cursor: pointer; transition: all 0.2s; text-decoration: none; white-space: nowrap;
+  }
+  .apply-cta:hover { background: var(--cardinal-d); box-shadow: 0 4px 16px rgba(140,21,21,0.35); }
+
+  /* ===== PAGE ROUTING ===== */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== HERO ===== */
+  .hero {
+    background: linear-gradient(170deg, #1C0A0A 0%, var(--cardinal) 45%, #6B2020 100%);
+    padding: 70px 48px 0;
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 52px;
+    align-items: end;
+    min-height: 460px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .hero-text { padding-bottom: 52px; position: relative; z-index: 1; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(178,111,22,0.25); border: 1px solid rgba(218,170,93,0.4);
+    color: var(--gold-l); font-size: 0.73rem; font-weight: 600;
+    padding: 5px 14px; border-radius: 20px; margin-bottom: 18px;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'Source Serif 4', serif; font-size: 3.2rem; font-weight: 700;
+    color: white; line-height: 1.1; margin-bottom: 18px;
+  }
+  .hero h1 em { font-style: normal; color: var(--gold-l); }
+  .hero-sub { color: rgba(255,255,255,0.68); font-size: 1rem; line-height: 1.75; margin-bottom: 32px; max-width: 500px; }
+
+  /* SMART SEARCH — the key fix */
+  .hero-search-wrap { position: relative; max-width: 540px; }
+  .hero-search {
+    display: flex; align-items: center; gap: 0;
+    background: white; border-radius: 10px; overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+  }
+  .hs-icon { padding: 0 14px; font-size: 1rem; color: var(--text3); flex-shrink: 0; }
+  .hero-search input {
+    flex: 1; border: none; outline: none; font-family: 'Inter', sans-serif;
+    font-size: 0.92rem; color: var(--text); padding: 14px 4px; background: none;
+  }
+  .hero-search input::placeholder { color: var(--text3); }
+  .hs-btn {
+    padding: 0 24px; height: 100%; background: var(--cardinal); color: white; border: none;
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.88rem; cursor: pointer;
+    transition: background 0.2s; align-self: stretch; white-space: nowrap;
+  }
+  .hs-btn:hover { background: var(--cardinal-d); }
+
+  .search-panel {
+    display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+    background: white; border-radius: 10px; box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border); z-index: 300; overflow: hidden;
+  }
+  .search-panel.open { display: block; }
+  .sp-head { padding: 10px 16px 4px; font-size: 0.7rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; }
+  .sp-row { display: flex; align-items: center; gap: 12px; padding: 10px 16px; cursor: pointer; transition: background 0.14s; }
+  .sp-row:hover { background: #FDF5F5; }
+  .sp-row .sr-icon { font-size: 1.05rem; flex-shrink: 0; }
+  .sp-row .sr-title { font-size: 0.86rem; font-weight: 600; color: var(--text); }
+  .sp-row .sr-sub   { font-size: 0.74rem; color: var(--text2); margin-top: 1px; }
+  .sp-row .sr-badge { margin-left: auto; font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .badge-open  { background: #ECFDF5; color: var(--green); }
+  .badge-dates { background: #FFF8EC; color: var(--gold); }
+
+  .search-pills { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .spill {
+    background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.78);
+    border: 1px solid rgba(255,255,255,0.2); padding: 4px 13px;
+    border-radius: 20px; font-size: 0.74rem; cursor: pointer; transition: all 0.18s;
+  }
+  .spill:hover { background: rgba(255,255,255,0.22); color: white; }
+
+  /* Stats row */
+  .hero-stats { display: flex; gap: 32px; margin-top: 32px; }
+  .hstat .n { font-family: 'Source Serif 4', serif; font-size: 1.9rem; font-weight: 700; color: var(--gold-l); }
+  .hstat .l { font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+
+  /* Hero right: audience selector */
+  .audience-selector { padding-bottom: 0; position: relative; z-index: 1; }
+  .as-label { color: rgba(255,255,255,0.5); font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+  .aud-card {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px; padding: 18px 20px; margin-bottom: 10px; cursor: pointer;
+    transition: all 0.22s; display: flex; align-items: center; gap: 14px; text-decoration: none;
+  }
+  .aud-card:hover { background: rgba(255,255,255,0.16); border-color: rgba(255,255,255,0.3); transform: translateX(6px); }
+  .aud-card.ug { border-left: 3px solid var(--gold-l); }
+  .aud-card.grad { border-left: 3px solid #7EC8E3; }
+  .aud-card.intl { border-left: 3px solid #A8E6CF; }
+  .ac-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .ac-title { color: white; font-weight: 700; font-size: 0.95rem; }
+  .ac-sub   { color: rgba(255,255,255,0.5); font-size: 0.76rem; margin-top: 2px; }
+  .ac-arrow { margin-left: auto; color: rgba(255,255,255,0.35); font-size: 1rem; }
+
+  /* ===== DEADLINES STRIP ===== */
+  .deadlines-strip {
+    background: var(--navy);
+    padding: 14px 48px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .deadlines-strip::-webkit-scrollbar { display: none; }
+  .ds-label { color: var(--gold-l); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; white-space: nowrap; flex-shrink: 0; }
+  .deadline-item {
+    display: flex; align-items: center; gap: 10px;
+    border-left: 1px solid rgba(255,255,255,0.1); padding-left: 20px;
+    flex-shrink: 0;
+  }
+  .deadline-item .di-date { font-weight: 700; font-size: 0.82rem; color: white; }
+  .deadline-item .di-desc { font-size: 0.76rem; color: rgba(255,255,255,0.55); }
+  .deadline-item .di-badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 0.66rem; font-weight: 700;
+  }
+  .di-urgent { background: rgba(220,38,38,0.25); color: #FCA5A5; }
+  .di-ok     { background: rgba(16,185,129,0.2); color: #6EE7B7; }
+
+  /* ===== SECTION ===== */
+  .section { padding: 56px 48px; }
+  .sec-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 28px; }
+  .sec-title { font-family: 'Source Serif 4', serif; font-size: 1.9rem; font-weight: 700; color: var(--text); }
+  .sec-sub { color: var(--text2); font-size: 0.88rem; margin-top: 5px; max-width: 520px; }
+  .see-all { color: var(--cardinal); font-weight: 600; font-size: 0.85rem; text-decoration: none; display: flex; align-items: center; gap: 4px; white-space: nowrap; cursor: pointer; }
+  .see-all:hover { text-decoration: underline; }
+
+  /* ===== AUDIENCE TABS (main fix: UG vs Grad clearly separated) ===== */
+  .aud-tabs {
+    display: flex; gap: 0;
+    border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden;
+    display: inline-flex; margin-bottom: 28px;
+    box-shadow: var(--shadow);
+  }
+  .aud-tab {
+    padding: 12px 28px; background: white; border: none; border-right: 1.5px solid var(--border);
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.88rem; color: var(--text2);
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  }
+  .aud-tab:last-child { border-right: none; }
+  .aud-tab:hover { color: var(--cardinal); background: #FDF5F5; }
+  .aud-tab.active { background: var(--cardinal); color: white; }
+  .aud-panel { display: none; }
+  .aud-panel.active { display: block; }
+
+  /* ===== PROGRAM CARDS ===== */
+  .programs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .prog-card {
+    background: white; border: 1.5px solid var(--border); border-radius: 12px;
+    padding: 22px; cursor: pointer; transition: all 0.22s; position: relative; overflow: hidden;
+  }
+  .prog-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    background: var(--cardinal); transform: scaleX(0); transition: transform 0.2s; transform-origin: left;
+  }
+  .prog-card:hover { border-color: #D4AAAA; box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+  .prog-card:hover::after { transform: scaleX(1); }
+  .pc-icon { font-size: 1.6rem; margin-bottom: 12px; }
+  .pc-name { font-family: 'Source Serif 4', serif; font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 4px; }
+  .pc-dept { font-size: 0.76rem; color: var(--text3); margin-bottom: 10px; }
+  .pc-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pc-tag { padding: 3px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: 600; }
+  .tag-type  { background: #F0F4FF; color: #3B5BDB; }
+  .tag-dur   { background: #F0FFF4; color: var(--green); }
+  .tag-fund  { background: #FFFBEB; color: var(--gold); }
+  .tag-apps  { background: #FDF5F5; color: var(--cardinal); }
+
+  /* ===== INFO CARDS ===== */
+  .info-3col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+  .info-card {
+    background: white; border: 1.5px solid var(--border); border-radius: 12px;
+    padding: 22px; cursor: pointer; transition: all 0.2s; text-decoration: none; display: block;
+  }
+  .info-card:hover { border-color: #D4AAAA; box-shadow: var(--shadow); transform: translateY(-2px); }
+  .ic-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+  .ic-icon { font-size: 1.5rem; }
+  .ic-arrow { color: var(--cardinal); font-size: 0.9rem; opacity: 0; transition: opacity 0.2s; }
+  .info-card:hover .ic-arrow { opacity: 1; }
+  .ic-title { font-family: 'Source Serif 4', serif; font-weight: 700; font-size: 0.95rem; color: var(--text); margin-bottom: 6px; }
+  .ic-desc  { font-size: 0.78rem; color: var(--text2); line-height: 1.6; }
+  .ic-date  { font-size: 0.74rem; color: var(--cardinal); font-weight: 600; margin-top: 10px; }
+
+  /* ===== COMPARISON TABLE ===== */
+  .compare-table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--border); }
+  .compare-table th { padding: 14px 20px; background: var(--cardinal); color: white; font-size: 0.82rem; font-weight: 700; text-align: left; text-transform: uppercase; letter-spacing: 0.05em; }
+  .compare-table th:first-child { background: var(--cardinal-d); }
+  .compare-table td { padding: 13px 20px; font-size: 0.84rem; color: var(--text); border-bottom: 1px solid var(--border-l); vertical-align: top; }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:hover td { background: #FDF5F5; }
+  .compare-table td:first-child { font-weight: 600; color: var(--text2); font-size: 0.8rem; background: #FAFAFA; }
+  .ct-check { color: var(--green); font-weight: 700; }
+  .ct-dash  { color: var(--text3); }
+
+  /* ===== FINANCIAL AID ===== */
+  .aid-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .aid-card {
+    background: white; border: 1.5px solid var(--border); border-radius: 12px;
+    padding: 20px; display: flex; align-items: flex-start; gap: 14px;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .aid-card:hover { border-color: #D4AAAA; box-shadow: var(--shadow); }
+  .aid-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .aid-name { font-weight: 700; font-size: 0.88rem; color: var(--text); }
+  .aid-desc { font-size: 0.76rem; color: var(--text2); margin-top: 4px; line-height: 1.5; }
+  .aid-amount { font-size: 0.76rem; color: var(--cardinal); font-weight: 700; margin-top: 6px; }
+
+  /* ===== TIMELINE ===== */
+  .tl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .tl-col-title { font-family: 'Source Serif 4', serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .timeline { position: relative; padding-left: 20px; }
+  .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+  .tl-item { position: relative; padding: 0 0 18px 22px; }
+  .tl-item::before { content: ''; position: absolute; left: -8px; top: 5px; width: 14px; height: 14px; border-radius: 50%; background: var(--cardinal); border: 3px solid white; box-shadow: 0 0 0 2px var(--cardinal); }
+  .tl-item.past::before { background: var(--text3); box-shadow: 0 0 0 2px var(--text3); }
+  .tl-item.active::before { background: var(--green); box-shadow: 0 0 0 2px var(--green); animation: tlpulse 1.6s ease-in-out infinite; }
+  @keyframes tlpulse { 0%,100%{box-shadow:0 0 0 2px var(--green)} 50%{box-shadow:0 0 0 6px rgba(45,106,79,0.2)} }
+  .tl-date { font-size: 0.73rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .tl-title { font-weight: 600; font-size: 0.88rem; color: var(--text); margin: 3px 0; }
+  .tl-sub { font-size: 0.76rem; color: var(--text2); }
+
+  /* ===== STATS BAR ===== */
+  .stats-bar { background: var(--sand); border-top: 4px solid var(--cardinal); border-bottom: 1px solid var(--border); padding: 36px 48px; display: grid; grid-template-columns: repeat(5, 1fr); text-align: center; gap: 1px; }
+  .sb-item { padding: 4px 12px; border-right: 1px solid var(--border); }
+  .sb-item:last-child { border-right: none; }
+  .sb-num { font-family: 'Source Serif 4', serif; font-size: 2.2rem; font-weight: 700; color: var(--cardinal); }
+  .sb-lbl { font-size: 0.76rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+  /* ===== ADMISSIONS DETAIL PAGE ===== */
+  .adm-hero { background: var(--sand); border-bottom: 1px solid var(--border); padding: 48px 48px 36px; }
+  .breadcrumb { font-size: 0.76rem; color: var(--text3); margin-bottom: 12px; display: flex; gap: 6px; align-items: center; }
+  .breadcrumb a { color: var(--cardinal); font-weight: 600; text-decoration: none; cursor: pointer; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .adm-hero h1 { font-family: 'Source Serif 4', serif; font-size: 2.5rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .adm-hero p { color: var(--text2); font-size: 0.95rem; max-width: 680px; line-height: 1.75; }
+
+  .adm-layout { display: grid; grid-template-columns: 220px 1fr; gap: 32px; padding: 32px 48px; align-items: start; }
+
+  /* SIDEBAR — all admission links in one place */
+  .adm-sidebar { background: white; border: 1.5px solid var(--border); border-radius: 12px; overflow: hidden; position: sticky; top: 82px; }
+  .adm-sb-head { padding: 14px 18px; background: var(--cardinal); color: white; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+  .adm-sb-section { padding: 8px 18px 4px; font-size: 0.68rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 4px; }
+  .adm-sb-link {
+    display: flex; align-items: center; gap: 9px; padding: 10px 18px;
+    text-decoration: none; color: var(--text2); font-size: 0.83rem; font-weight: 500;
+    border-bottom: 1px solid var(--border-l); transition: all 0.18s; cursor: pointer;
+  }
+  .adm-sb-link:hover { color: var(--cardinal); background: #FDF5F5; }
+  .adm-sb-link.active { color: var(--cardinal); font-weight: 700; background: #FDF5F5; border-left: 3px solid var(--cardinal); }
+  .adm-sb-link .sbl-icon { font-size: 0.95rem; }
+  .adm-sb-link:last-child { border-bottom: none; }
+
+  .adm-main { }
+
+  /* Degree level switcher */
+  .deg-switcher { display: inline-flex; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 4px; gap: 4px; margin-bottom: 26px; }
+  .deg-btn { padding: 9px 22px; border: none; border-radius: 7px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.85rem; cursor: pointer; color: var(--text2); background: none; transition: all 0.2s; }
+  .deg-btn.active { background: white; color: var(--cardinal); box-shadow: var(--shadow); }
+
+  /* ===== EXPLORE SECTION ===== */
+  .explore-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .explore-card {
+    background: white; border: 1.5px solid var(--border); border-radius: 12px;
+    padding: 20px 18px; cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .explore-card:hover { border-color: #D4AAAA; box-shadow: var(--shadow); transform: translateY(-3px); }
+  .ec-icon { font-size: 2rem; margin-bottom: 10px; }
+  .ec-name { font-weight: 700; font-size: 0.88rem; color: var(--text); }
+  .ec-count { font-size: 0.74rem; color: var(--text2); margin-top: 3px; }
+
+  /* ===== FOOTER ===== */
+  footer { background: var(--navy); color: rgba(255,255,255,0.6); padding: 48px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
+  .footer-brand { font-family: 'Source Serif 4', serif; font-size: 1.4rem; font-weight: 700; color: white; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .footer-brand .fb-dot { color: var(--gold-l); }
+  footer p { font-size: 0.8rem; line-height: 1.8; }
+  footer h4 { color: white; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 14px; }
+  footer ul { list-style: none; }
+  footer ul li { margin-bottom: 8px; }
+  footer ul a { color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.8rem; transition: color 0.2s; cursor: pointer; }
+  footer ul a:hover { color: white; }
+  .footer-bottom { background: rgba(0,0,0,0.35); padding: 12px 48px; display: flex; justify-content: space-between; font-size: 0.74rem; color: rgba(255,255,255,0.35); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  .fu { animation: fadeUp 0.45s ease both; }
+  .fu2 { animation-delay: 0.1s; }
+  .fu3 { animation-delay: 0.18s; }
+</style>
+</head>
+<body>
+
+<!-- UTILITY BAR -->
+<div class="utility-bar">
+  <span>🌲 Founded 1885 · Palo Alto, California</span>
+  <div>
+    <a href="#">My Stanford</a>
+    <a href="#">Faculty</a>
+    <a href="#">Staff</a>
+    <a href="#">Alumni</a>
+    <a href="#">Giving</a>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-brand" onclick="showPage('home')">
+    <div class="nav-seal">🌲</div>
+    <div class="brand-text">
+      <div class="univ">Stanford University</div>
+      <div class="loc">The Farm · Palo Alto, CA</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a onclick="showPage('home')" class="active" style="cursor:pointer">Home</a>
+    <a onclick="showPage('admissions')" style="cursor:pointer; color:var(--cardinal); font-weight:600;">Admissions</a>
+    <a style="cursor:pointer">Academics</a>
+    <a style="cursor:pointer">Research</a>
+    <a style="cursor:pointer">Campus Life</a>
+    <a style="cursor:pointer">About</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-search">
+      <span style="color:var(--text3)">🔍</span>
+      <input type="text" placeholder="Search Stanford...">
+    </div>
+    <a onclick="showPage('admissions')" class="apply-cta" style="cursor:pointer">Apply Now</a>
+  </div>
+</nav>
+
+<!-- ============================================================ HOME ============================================================ -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-text fu">
+      <div class="hero-eyebrow">🏆 #1 Ranked University · US News 2025</div>
+      <h1>Begin Your Journey at <em>Stanford</em></h1>
+      <p class="hero-sub">One of the world's great research universities — pushing the boundaries of human knowledge and cultivating leaders who make a difference globally.</p>
+
+      <!-- SMART SEARCH — FIX: prominent, fast, context-aware -->
+      <div class="hero-search-wrap">
+        <div class="hero-search">
+          <span class="hs-icon">🔍</span>
+          <input type="text" id="heroSearch" placeholder="Search programs, deadlines, financial aid..." onfocus="openSP()" oninput="openSP()">
+          <button class="hs-btn">Search</button>
+        </div>
+        <div class="search-panel" id="searchPanel">
+          <div class="sp-head">Admissions</div>
+          <div class="sp-row" onclick="showPage('admissions')">
+            <span class="sr-icon">🎓</span>
+            <div><div class="sr-title">Undergraduate Admissions</div><div class="sr-sub">Class of 2029 · Regular Decision open</div></div>
+            <span class="sr-badge badge-open">Open</span>
+          </div>
+          <div class="sp-row" onclick="showPage('admissions')">
+            <span class="sr-icon">📘</span>
+            <div><div class="sr-title">Graduate Admissions</div><div class="sr-sub">MS, PhD, MBA · Program-specific deadlines</div></div>
+            <span class="sr-badge badge-open">Open</span>
+          </div>
+          <div class="sp-row" onclick="showPage('admissions')">
+            <span class="sr-icon">💰</span>
+            <div><div class="sr-title">Financial Aid & Scholarships</div><div class="sr-sub">Meets 100% of demonstrated need</div></div>
+          </div>
+          <div class="sp-row" onclick="showPage('admissions')">
+            <span class="sr-icon">📅</span>
+            <div><div class="sr-title">Application Deadlines</div><div class="sr-sub">Early Action: Nov 1 · Regular: Jan 2</div></div>
+            <span class="sr-badge badge-dates">Key Dates</span>
+          </div>
+          <div class="sp-head">Popular Programs</div>
+          <div class="sp-row">
+            <span class="sr-icon">💻</span>
+            <div><div class="sr-title">Computer Science</div><div class="sr-sub">BS · MS · PhD — School of Engineering</div></div>
+          </div>
+          <div class="sp-row">
+            <span class="sr-icon">⚕️</span>
+            <div><div class="sr-title">Medicine (MD)</div><div class="sr-sub">Stanford School of Medicine</div></div>
+          </div>
+          <div class="sp-row">
+            <span class="sr-icon">📊</span>
+            <div><div class="sr-title">MBA Program</div><div class="sr-sub">Stanford Graduate School of Business</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-pills">
+        <span class="spill" onclick="showPage('admissions')">Undergrad Admissions</span>
+        <span class="spill" onclick="showPage('admissions')">Graduate Admissions</span>
+        <span class="spill" onclick="showPage('admissions')">Financial Aid</span>
+        <span class="spill">Deadlines 2025</span>
+        <span class="spill">International Students</span>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hstat"><div class="n">3.9%</div><div class="l">Acceptance Rate</div></div>
+        <div class="hstat"><div class="n">7,761</div><div class="l">Undergrads</div></div>
+        <div class="hstat"><div class="n">$100K+</div><div class="l">Avg Aid Package</div></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Audience selector cards -->
+    <div class="audience-selector fu fu2">
+      <div class="as-label">I am applying as a…</div>
+      <a class="aud-card ug" onclick="showPage('admissions')" style="cursor:pointer">
+        <div class="ac-icon">🎒</div>
+        <div>
+          <div class="ac-title">Undergraduate Student</div>
+          <div class="ac-sub">High school senior · First-year & Transfer</div>
+        </div>
+        <div class="ac-arrow">›</div>
+      </a>
+      <a class="aud-card grad" onclick="showPage('admissions')" style="cursor:pointer">
+        <div class="ac-icon">📘</div>
+        <div>
+          <div class="ac-title">Graduate Student</div>
+          <div class="ac-sub">MS · PhD · MBA · Professional programs</div>
+        </div>
+        <div class="ac-arrow">›</div>
+      </a>
+      <a class="aud-card intl" onclick="showPage('admissions')" style="cursor:pointer">
+        <div class="ac-icon">🌍</div>
+        <div>
+          <div class="ac-title">International Student</div>
+          <div class="ac-sub">Visa, TOEFL/IELTS, special resources</div>
+        </div>
+        <div class="ac-arrow">›</div>
+      </a>
+      <a class="aud-card" style="border-left:3px solid #E879F9; cursor:pointer" onclick="showPage('admissions')">
+        <div class="ac-icon">🔄</div>
+        <div>
+          <div class="ac-title">Transfer Student</div>
+          <div class="ac-sub">Community college & 4-year transfer</div>
+        </div>
+        <div class="ac-arrow">›</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- DEADLINES STRIP -->
+  <div class="deadlines-strip">
+    <span class="ds-label">📅 Upcoming Deadlines</span>
+    <div class="deadline-item">
+      <div>
+        <div class="di-date">Nov 1, 2025</div>
+        <div class="di-desc">UG Early Action</div>
+      </div>
+      <span class="di-badge di-urgent">Upcoming</span>
+    </div>
+    <div class="deadline-item">
+      <div>
+        <div class="di-date">Jan 2, 2026</div>
+        <div class="di-desc">UG Regular Decision</div>
+      </div>
+      <span class="di-badge di-ok">Open</span>
+    </div>
+    <div class="deadline-item">
+      <div>
+        <div class="di-date">Dec 1, 2025</div>
+        <div class="di-desc">Graduate (most programs)</div>
+      </div>
+      <span class="di-badge di-ok">Open</span>
+    </div>
+    <div class="deadline-item">
+      <div>
+        <div class="di-date">Apr 10, 2026</div>
+        <div class="di-desc">Financial Aid FAFSA</div>
+      </div>
+      <span class="di-badge di-ok">Open</span>
+    </div>
+    <div class="deadline-item">
+      <div>
+        <div class="di-date">Mar 15, 2026</div>
+        <div class="di-desc">Transfer Applications</div>
+      </div>
+      <span class="di-badge di-ok">Open</span>
+    </div>
+  </div>
+
+  <!-- ADMISSIONS OVERVIEW — UG vs GRAD TABS (key fix) -->
+  <div class="section">
+    <div class="sec-header">
+      <div>
+        <div class="sec-title">Admissions at Stanford</div>
+        <div class="sec-sub">Select your level to see programs, deadlines, and how to apply — all in one place.</div>
+      </div>
+      <a onclick="showPage('admissions')" class="see-all" style="cursor:pointer">Full Admissions Portal →</a>
+    </div>
+
+    <!-- AUDIENCE TABS — FIX: UG and Graduate clearly separated, not spread across pages -->
+    <div class="aud-tabs">
+      <button class="aud-tab active" onclick="switchAudience('ug', this)">🎒 Undergraduate</button>
+      <button class="aud-tab" onclick="switchAudience('grad', this)">📘 Graduate</button>
+      <button class="aud-tab" onclick="switchAudience('intl', this)">🌍 International</button>
+      <button class="aud-tab" onclick="switchAudience('transfer', this)">🔄 Transfer</button>
+    </div>
+
+    <!-- UG PANEL -->
+    <div class="aud-panel active" id="panel-ug">
+      <div class="info-3col">
+        <a class="info-card">
+          <div class="ic-top"><div class="ic-icon">📋</div><div class="ic-arrow">→</div></div>
+          <div class="ic-title">How to Apply</div>
+          <div class="ic-desc">Apply via CommonApp or Coalition App. No application fee for eligible students.</div>
+          <div class="ic-date">EA: Nov 1 · RD: Jan 2, 2026</div>
+        </a>
+        <a class="info-card">
+          <div class="ic-top"><div class="ic-icon">✅</div><div class="ic-arrow">→</div></div>
+          <div class="ic-title">Eligibility & Requirements</div>
+          <div class="ic-desc">High school diploma, transcripts, SAT/ACT optional, 2 teacher recs, essays.</div>
+          <div class="ic-date">Test-Optional Policy in Effect</div>
+        </a>
+        <a class="info-card">
+          <div class="ic-top"><div class="ic-icon">💰</div><div class="ic-arrow">→</div></div>
+          <div class="ic-title">Financial Aid</div>
+          <div class="ic-desc">Stanford meets 100% of demonstrated financial need. Avg aid package $67,000/yr.</div>
+          <div class="ic-date">Families earning &lt;$100K pay $0</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- GRAD PANEL -->
+    <div class="aud-panel" id="panel-grad">
+      <div class="info-3col">
+        <a class="info-card">
+          <div class="ic-top"><div class="ic-icon">📘</div><div class="ic-arrow">→</div></div>
+          <div class="ic-title">Graduate Programs</div>
+          <div class="ic-desc">200+ graduate programs across 7 schools — apply directly to your chosen department.</div>
+          <div class="ic-date">Most deadlines: Dec–Jan</div>
+        </a>
+        <a class="info-card">
+          <div class="ic-top"><div class="ic-icon">🔬</div><div class="ic-arrow">→</div></div>
+          <div class="ic-title">PhD Programs</div>
+          <div class="ic-desc">Fully funded doctoral programs with stipends, health insurance, and housing support.</div>
+          <div class="ic-date">Stipend ~$40,000/year</div>
+        </a>
+        <a class="info-card">
+          <div class="ic-top"><div class="ic-icon">🏛️</div><div class="ic-arrow">→</div></div>
+          <div class="ic-title">Professional Schools</div>
+          <div class="ic-desc">Stanford GSB (MBA), School of Law (JD), School of Medicine (MD) and more.</div>
+          <div class="ic-date">See individual deadlines</div>
+        </a>
+      </div>
+      <div class="programs-grid">
+        <div class="prog-card"><div class="pc-icon">💻</div><div class="pc-name">Computer Science</div><div class="pc-dept">School of Engineering · MS & PhD</div><div class="pc-tags"><span class="pc-tag tag-type">MS · PhD</span><span class="pc-tag tag-fund">Fully Funded</span><span class="pc-tag tag-apps">Deadline: Dec 5</span></div></div>
+        <div class="prog-card"><div class="pc-icon">📊</div><div class="pc-name">MBA (GSB)</div><div class="pc-dept">Graduate School of Business</div><div class="pc-tags"><span class="pc-tag tag-type">MBA</span><span class="pc-tag tag-dur">2 Years</span><span class="pc-tag tag-apps">Deadline: Sep 10</span></div></div>
+        <div class="prog-card"><div class="pc-icon">⚕️</div><div class="pc-name">Medicine (MD)</div><div class="pc-dept">Stanford School of Medicine</div><div class="pc-tags"><span class="pc-tag tag-type">MD</span><span class="pc-tag tag-dur">4 Years</span><span class="pc-tag tag-apps">Deadline: Oct 15</span></div></div>
+        <div class="prog-card"><div class="pc-icon">⚡</div><div class="pc-name">Electrical Engineering</div><div class="pc-dept">School of Engineering · MS & PhD</div><div class="pc-tags"><span class="pc-tag tag-type">MS · PhD</span><span class="pc-tag tag-fund">Fully Funded</span><span class="pc-tag tag-apps">Deadline: Dec 1</span></div></div>
+        <div class="prog-card"><div class="pc-icon">🧬</div><div class="pc-name">Biomedical Engineering</div><div class="pc-dept">School of Engineering & Medicine</div><div class="pc-tags"><span class="pc-tag tag-type">MS · PhD</span><span class="pc-tag tag-fund">Fully Funded</span><span class="pc-tag tag-apps">Deadline: Dec 1</span></div></div>
+        <div class="prog-card"><div class="pc-icon">⚖️</div><div class="pc-name">Law (JD)</div><div class="pc-dept">Stanford Law School</div><div class="pc-tags"><span class="pc-tag tag-type">JD</span><span class="pc-tag tag-dur">3 Years</span><span class="pc-tag tag-apps">Deadline: Feb 1</span></div></div>
+      </div>
+    </div>
+
+    <!-- INTL PANEL -->
+    <div class="aud-panel" id="panel-intl">
+      <div class="info-3col">
+        <a class="info-card"><div class="ic-top"><div class="ic-icon">🌐</div><div class="ic-arrow">→</div></div><div class="ic-title">English Proficiency</div><div class="ic-desc">TOEFL iBT minimum 100, IELTS 7.0+. Some programs have exceptions.</div></a>
+        <a class="info-card"><div class="ic-top"><div class="ic-icon">🛂</div><div class="ic-arrow">→</div></div><div class="ic-title">Visa (F-1 / J-1)</div><div class="ic-desc">Stanford's Bechtel International Center supports all international student visa needs.</div></a>
+        <a class="info-card"><div class="ic-top"><div class="ic-icon">💵</div><div class="ic-arrow">→</div></div><div class="ic-title">Financial Aid for Intl Students</div><div class="ic-desc">Need-blind for international undergrads. Graduate students eligible for funding.</div></a>
+      </div>
+    </div>
+
+    <!-- TRANSFER PANEL -->
+    <div class="aud-panel" id="panel-transfer">
+      <div class="info-3col">
+        <a class="info-card"><div class="ic-top"><div class="ic-icon">📂</div><div class="ic-arrow">→</div></div><div class="ic-title">Transfer Requirements</div><div class="ic-desc">60+ transferable units, strong GPA, college transcripts, SAT/ACT optional.</div><div class="ic-date">Deadline: Mar 15, 2026</div></a>
+        <a class="info-card"><div class="ic-top"><div class="ic-icon">🏠</div><div class="ic-arrow">→</div></div><div class="ic-title">Housing & Support</div><div class="ic-desc">2 years of on-campus housing guaranteed for all transfer students.</div></a>
+        <a class="info-card"><div class="ic-top"><div class="ic-icon">💰</div><div class="ic-arrow">→</div></div><div class="ic-title">Transfer Aid</div><div class="ic-desc">Same need-blind aid policy applies to all domestic transfer students.</div></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPLORE SCHOOLS -->
+  <div class="section" style="padding-top:0; background: white; border-top:1px solid var(--border);">
+    <div class="sec-header">
+      <div>
+        <div class="sec-title">Discover Stanford's Schools</div>
+        <div class="sec-sub">7 schools, 200+ programs — find the right fit for your academic goals.</div>
+      </div>
+    </div>
+    <div class="explore-grid">
+      <div class="explore-card"><div class="ec-icon">💻</div><div class="ec-name">Engineering</div><div class="ec-count">40+ programs</div></div>
+      <div class="explore-card"><div class="ec-icon">🏛️</div><div class="ec-name">Humanities & Sciences</div><div class="ec-count">80+ programs</div></div>
+      <div class="explore-card"><div class="ec-icon">📊</div><div class="ec-name">Business (GSB)</div><div class="ec-count">MBA · MSx · PhD</div></div>
+      <div class="explore-card"><div class="ec-icon">⚕️</div><div class="ec-name">Medicine</div><div class="ec-count">MD · PhD · MS</div></div>
+      <div class="explore-card"><div class="ec-icon">⚖️</div><div class="ec-name">Law</div><div class="ec-count">JD · LLM · JSD</div></div>
+      <div class="explore-card"><div class="ec-icon">🌱</div><div class="ec-name">Earth, Energy & Env.</div><div class="ec-count">15+ programs</div></div>
+      <div class="explore-card"><div class="ec-icon">🎓</div><div class="ec-name">Education (SCALE)</div><div class="ec-count">MA · PhD</div></div>
+      <div class="explore-card"><div class="ec-icon">🔭</div><div class="ec-name">Interdisciplinary</div><div class="ec-count">Joint programs</div></div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="sb-item"><div class="sb-num">3.9%</div><div class="sb-lbl">Acceptance Rate</div></div>
+    <div class="sb-item"><div class="sb-num">$6.9B</div><div class="sb-lbl">Research Spending/yr</div></div>
+    <div class="sb-item"><div class="sb-num">83</div><div class="sb-lbl">Nobel Laureates</div></div>
+    <div class="sb-item"><div class="sb-num">100%</div><div class="sb-lbl">Need Met (UG)</div></div>
+    <div class="sb-item"><div class="sb-num">17,000+</div><div class="sb-lbl">Total Students</div></div>
+  </div>
+
+</div><!-- /home -->
+
+<!-- ============================================================ ADMISSIONS PAGE ============================================================ -->
+<div class="page" id="page-admissions">
+  <div class="adm-hero">
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a> › <span>Admissions</span></div>
+    <h1>Admissions — 2025–26</h1>
+    <p>Stanford welcomes students who demonstrate exceptional intellectual curiosity, passion, and the desire to contribute to society. Explore your path below — whether undergraduate, graduate, or professional.</p>
+  </div>
+
+  <div class="adm-layout">
+    <!-- SIDEBAR — FIX: all links consolidated, organized by audience -->
+    <div class="adm-sidebar">
+      <div class="adm-sb-head">Admissions Menu</div>
+      <div class="adm-sb-section">Undergraduate</div>
+      <a class="adm-sb-link active"><span class="sbl-icon">🎒</span> UG Overview</a>
+      <a class="adm-sb-link"><span class="sbl-icon">📋</span> How to Apply</a>
+      <a class="adm-sb-link"><span class="sbl-icon">📅</span> Deadlines & Dates</a>
+      <a class="adm-sb-link"><span class="sbl-icon">✅</span> Requirements</a>
+      <a class="adm-sb-link"><span class="sbl-icon">💰</span> Financial Aid</a>
+      <div class="adm-sb-section">Graduate</div>
+      <a class="adm-sb-link"><span class="sbl-icon">📘</span> Grad Overview</a>
+      <a class="adm-sb-link"><span class="sbl-icon">🔬</span> PhD Programs</a>
+      <a class="adm-sb-link"><span class="sbl-icon">🏛️</span> Professional Schools</a>
+      <a class="adm-sb-link"><span class="sbl-icon">💵</span> Grad Funding</a>
+      <div class="adm-sb-section">Resources</div>
+      <a class="adm-sb-link"><span class="sbl-icon">🌍</span> International Students</a>
+      <a class="adm-sb-link"><span class="sbl-icon">🔄</span> Transfer Applicants</a>
+      <a class="adm-sb-link"><span class="sbl-icon">🏅</span> Scholarships</a>
+      <a class="adm-sb-link"><span class="sbl-icon">🗺️</span> Visit Campus</a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="adm-main">
+      <!-- Degree switcher -->
+      <div class="deg-switcher">
+        <button class="deg-btn active" onclick="switchDeg('ug', this)">🎒 Undergraduate (BS/BA)</button>
+        <button class="deg-btn" onclick="switchDeg('ms', this)">📘 Masters (MS)</button>
+        <button class="deg-btn" onclick="switchDeg('phd', this)">🔬 PhD</button>
+        <button class="deg-btn" onclick="switchDeg('prof', this)">🏛️ Professional</button>
+      </div>
+
+      <!-- Application Timelines side-by-side — FIX: no subpage hunting -->
+      <div class="tl-grid" style="margin-bottom:32px">
+        <div>
+          <div class="tl-col-title">📋 UG Application Timeline</div>
+          <div class="timeline">
+            <div class="tl-item past"><div class="tl-date">Aug 1, 2025</div><div class="tl-title">Applications Open</div><div class="tl-sub">CommonApp & Coalition App</div></div>
+            <div class="tl-item active"><div class="tl-date">Now → Nov 1</div><div class="tl-title">⚡ Early Action — OPEN</div><div class="tl-sub">Non-binding, results by Dec 15</div></div>
+            <div class="tl-item"><div class="tl-date">Jan 2, 2026</div><div class="tl-title">Regular Decision Deadline</div><div class="tl-sub">Final deadline for UG applicants</div></div>
+            <div class="tl-item"><div class="tl-date">Apr 1, 2026</div><div class="tl-title">Decisions Released</div><div class="tl-sub">Offers of admission sent</div></div>
+            <div class="tl-item"><div class="tl-date">May 1, 2026</div><div class="tl-title">Enrollment Deadline</div><div class="tl-sub">Confirm your place at Stanford</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="tl-col-title">📘 Graduate Application Timeline</div>
+          <div class="timeline">
+            <div class="tl-item past"><div class="tl-date">Sep 1, 2025</div><div class="tl-title">Applications Open</div><div class="tl-sub">Most graduate programs</div></div>
+            <div class="tl-item active"><div class="tl-date">Now → Dec 2025</div><div class="tl-title">⚡ Applications — OPEN</div><div class="tl-sub">Check your program for specific date</div></div>
+            <div class="tl-item"><div class="tl-date">Dec 1–15, 2025</div><div class="tl-title">Most Grad Deadlines</div><div class="tl-sub">Engineering, Sciences, Humanities</div></div>
+            <div class="tl-item"><div class="tl-date">Feb–Mar 2026</div><div class="tl-title">Decisions Released</div><div class="tl-sub">Rolling admissions for some programs</div></div>
+            <div class="tl-item"><div class="tl-date">Apr 15, 2026</div><div class="tl-title">Enrollment Confirmation</div><div class="tl-sub">National PhD deadline (CGS)</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UG vs GRAD COMPARISON TABLE (FIX: see both at once) -->
+      <div style="margin-bottom:32px">
+        <div class="sec-title" style="font-size:1.3rem; margin-bottom:14px">UG vs Graduate — At a Glance</div>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>🎒 Undergraduate</th>
+              <th>📘 Graduate (MS)</th>
+              <th>🔬 PhD</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Application Platform</td><td>CommonApp / Coalition</td><td>Stanford-specific portal</td><td>Department portal</td></tr>
+            <tr><td>Application Deadline</td><td>Nov 1 (EA) · Jan 2 (RD)</td><td>Dec 1–15 (varies)</td><td>Dec 1–15 (varies)</td></tr>
+            <tr><td>Test Requirements</td><td>SAT/ACT optional</td><td>GRE optional/required</td><td>GRE often required</td></tr>
+            <tr><td>Letters of Recommendation</td><td>2 teacher + 1 counselor</td><td>3 academic/professional</td><td>3 academic</td></tr>
+            <tr><td>Financial Aid</td><td class="ct-check">✔ Need-blind, 100% met</td><td>Partial funding available</td><td class="ct-check">✔ Fully funded + stipend</td></tr>
+            <tr><td>Application Fee</td><td>$90 (waivers available)</td><td>$125</td><td>$125</td></tr>
+            <tr><td>Decision Timeline</td><td>Dec 15 (EA) · Apr 1 (RD)</td><td>Feb–Mar 2026</td><td>Feb–Apr 2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- FINANCIAL AID SUMMARY -->
+      <div>
+        <div class="sec-title" style="font-size:1.3rem; margin-bottom:6px">💰 Financial Aid & Funding</div>
+        <p style="color:var(--text2);font-size:0.85rem;margin-bottom:18px;">Stanford is committed to affordability. No student should be unable to attend due to financial need.</p>
+        <div class="aid-grid">
+          <div class="aid-card"><div class="aid-icon">🏠</div><div><div class="aid-name">Families Under $100K</div><div class="aid-desc">Pay $0 for tuition. Room & board may also be covered.</div><div class="aid-amount">Full Coverage</div></div></div>
+          <div class="aid-card"><div class="aid-icon">📜</div><div><div class="aid-name">Merit Scholarships</div><div class="aid-desc">Competitive awards based on academic and extracurricular excellence.</div><div class="aid-amount">Up to $30,000/yr</div></div></div>
+          <div class="aid-card"><div class="aid-icon">🔬</div><div><div class="aid-name">PhD Fellowship</div><div class="aid-desc">All doctoral students receive full tuition + living stipend + health coverage.</div><div class="aid-amount">~$40,000/yr stipend</div></div></div>
+          <div class="aid-card"><div class="aid-icon">🌍</div><div><div class="aid-name">International Aid</div><div class="aid-desc">Need-blind admissions for international undergrads. Same aid formula applied.</div><div class="aid-amount">Same as Domestic</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /admissions -->
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">Stanford<span class="fb-dot">.</span></div>
+    <p>Stanford University, one of the world's leading research and teaching institutions, is dedicated to finding solutions to big challenges and to preparing students for leadership in a complex world.</p>
+  </div>
+  <div>
+    <h4>Admissions</h4>
+    <ul>
+      <li><a onclick="showPage('admissions')">Undergraduate</a></li>
+      <li><a onclick="showPage('admissions')">Graduate</a></li>
+      <li><a>Transfer Students</a></li>
+      <li><a>International</a></li>
+      <li><a>Financial Aid</a></li>
+      <li><a>Visit Campus</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Schools</h4>
+    <ul>
+      <li><a>Engineering</a></li>
+      <li><a>Business (GSB)</a></li>
+      <li><a>Medicine</a></li>
+      <li><a>Law</a></li>
+      <li><a>H&S</a></li>
+      <li><a>Education</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Resources</h4>
+    <ul>
+      <li><a>Stanford Explore</a></li>
+      <li><a>Research</a></li>
+      <li><a>Campus Life</a></li>
+      <li><a>Alumni Network</a></li>
+      <li><a>News</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2025 Stanford University. All Rights Reserved. · Palo Alto, California 94305</span>
+  <span>Accessibility · Privacy · Terms</span>
+</div>
+
+<script>
+  function showPage(p) {
+    document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+    document.getElementById('page-' + p).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function switchAudience(id, btn) {
+    document.querySelectorAll('.aud-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.aud-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+  }
+  function switchDeg(id, btn) {
+    document.querySelectorAll('.deg-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  function openSP() {
+    document.getElementById('searchPanel').classList.add('open');
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.hero-search-wrap')) {
+      document.getElementById('searchPanel')?.classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Domino's – Checkout</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #e31837;
+    --red-dark: #c0101e;
+    --blue: #006491;
+    --blue-dark: #004f74;
+    --bg: #f2f2f2;
+    --surface: #ffffff;
+    --border: #ddd;
+    --text: #1a1a1a;
+    --muted: #6b7280;
+    --green: #16a34a;
+    --success-bg: #f0fdf4;
+    --warn: #d97706;
+    --warn-bg: #fffbeb;
+    --input-focus: #006491;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+  }
+
+  /* NAV */
+  nav {
+    background: #fff;
+    border-bottom: 3px solid var(--red);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 60px;
+  }
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--red);
+    letter-spacing: -0.5px;
+    margin-right: 12px;
+  }
+  .logo span { color: var(--blue); }
+  nav a {
+    text-decoration: none;
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--red); }
+
+  /* PROGRESS STEPS */
+  .progress-bar {
+    background: var(--blue);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.55);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .step.active { color: #fff; }
+  .step.done { color: rgba(255,255,255,0.75); }
+  .step-num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem;
+    flex-shrink: 0;
+  }
+  .step.active .step-num { background: #fff; color: var(--blue); border-color: #fff; }
+  .step.done .step-num { background: rgba(255,255,255,0.3); }
+  .step-connector {
+    width: 50px;
+    height: 2px;
+    background: rgba(255,255,255,0.25);
+    margin: 0 8px;
+  }
+
+  /* LAYOUT */
+  .page {
+    max-width: 1060px;
+    margin: 28px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* SECTION CARD */
+  .card {
+    background: var(--surface);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    margin-bottom: 20px;
+  }
+  .card-header {
+    background: var(--blue);
+    padding: 14px 20px;
+    color: white;
+    font-size: 0.88rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-header .step-badge {
+    background: rgba(255,255,255,0.2);
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-size: 0.72rem;
+  }
+  .card-body { padding: 20px; }
+
+  /* INFO BANNER */
+  .prefilled-notice {
+    background: var(--success-bg);
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    font-size: 0.82rem;
+    color: var(--green);
+    font-weight: 600;
+  }
+  .prefilled-notice .icon { font-size: 1.1rem; }
+
+  /* ORDER ITEM */
+  .order-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .order-item:last-of-type { border-bottom: none; }
+  .item-img {
+    width: 58px; height: 58px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #ff6b35, #e31837);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+  }
+  .item-details { flex: 1; }
+  .item-name { font-weight: 700; font-size: 0.9rem; }
+  .item-sub { color: var(--muted); font-size: 0.78rem; margin-top: 2px; }
+  .qty-control {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  .qty-btn {
+    width: 30px; height: 30px;
+    background: #f5f5f5;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    transition: background 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .qty-btn:hover { background: #e8e8e8; }
+  .qty-val {
+    width: 32px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: none;
+    outline: none;
+    background: white;
+  }
+  .item-price { font-weight: 700; font-size: 0.95rem; min-width: 70px; text-align: right; }
+  .del-btn {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 4px;
+    transition: color 0.2s;
+  }
+  .del-btn:hover { color: var(--red); }
+
+  .add-more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    padding: 9px 16px;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.84rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    letter-spacing: 0.03em;
+  }
+  .add-more-btn:hover { background: var(--red-dark); }
+
+  /* DRINKS SECTION */
+  .drinks-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .drink-card {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .drink-card:hover { border-color: var(--blue); }
+  .drink-card.selected { border-color: var(--blue); background: #f0f8ff; }
+  .drink-card .d-icon { font-size: 1.8rem; margin-bottom: 4px; }
+  .drink-card .d-name { font-size: 0.72rem; font-weight: 700; color: var(--text); }
+  .drink-card .d-price { font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
+
+  /* FORM */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .form-row.single { grid-template-columns: 1fr; }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+  }
+  label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  label .req { color: var(--red); }
+  label .prefilled-tag {
+    background: var(--success-bg);
+    color: var(--green);
+    border: 1px solid #bbf7d0;
+    font-size: 0.65rem;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+  }
+  input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: white;
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 3px rgba(0,100,145,0.12);
+  }
+  input.prefilled { background: #f8fff8; border-color: #a7f3d0; color: var(--text); }
+  input.error { border-color: var(--red); }
+  .field-hint {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .field-hint.error-msg { color: var(--red); display: none; }
+  input.error ~ .field-hint.error-msg { display: block; }
+
+  /* LOCATION SECTION – pre-selected with edit option */
+  .location-selected {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #f0f8ff;
+    border: 1.5px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  .location-icon { font-size: 1.6rem; }
+  .location-info { flex: 1; }
+  .location-info strong { font-size: 0.9rem; display: block; }
+  .location-info span { color: var(--muted); font-size: 0.8rem; }
+  .edit-loc-btn {
+    background: none;
+    border: 1.5px solid var(--blue);
+    color: var(--blue);
+    border-radius: 7px;
+    padding: 6px 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .edit-loc-btn:hover { background: var(--blue); color: white; }
+
+  /* Payment toggle */
+  .payment-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .pay-opt {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.18s;
+    position: relative;
+  }
+  .pay-opt.selected { border-color: var(--blue); background: #f0f8ff; }
+  .pay-opt .p-icon { font-size: 1.4rem; }
+  .pay-opt .p-label { font-size: 0.82rem; font-weight: 700; }
+  .pay-opt .p-sub { font-size: 0.7rem; color: var(--muted); }
+  .pay-check {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: white;
+    font-size: 0.65rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+  }
+  .pay-opt.selected .pay-check { display: flex; }
+
+  /* ORDER SUMMARY SIDEBAR */
+  .summary-card {
+    background: var(--surface);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    position: sticky;
+    top: 20px;
+  }
+  .summary-header {
+    background: var(--red);
+    padding: 14px 20px;
+    color: white;
+    font-size: 0.88rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .summary-body { padding: 18px 20px; }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    font-size: 0.88rem;
+    border-bottom: 1px dashed var(--border);
+  }
+  .summary-row:last-of-type { border-bottom: none; }
+  .summary-row .label { color: var(--muted); }
+  .summary-row.total {
+    font-weight: 800;
+    font-size: 1rem;
+    border-top: 2px solid var(--border);
+    border-bottom: none;
+    padding-top: 12px;
+    margin-top: 4px;
+  }
+  .summary-row.total .label { color: var(--text); }
+  .summary-tax-note {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 6px;
+    text-align: center;
+  }
+
+  .place-order-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--red);
+    color: white;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 16px;
+    border-radius: 10px;
+    text-transform: uppercase;
+  }
+  .place-order-btn:hover { background: var(--red-dark); transform: translateY(-1px); }
+  .place-order-btn:active { transform: translateY(0); }
+
+  .secure-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  /* Inline validation feedback */
+  .valid-icon {
+    position: absolute;
+    right: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--green);
+    font-size: 0.9rem;
+    pointer-events: none;
+  }
+
+  /* CHANGE LOCATION MODAL (hidden by default) */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 14px;
+    padding: 28px;
+    width: 400px;
+    max-width: 95vw;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    animation: popIn 0.25s cubic-bezier(0.22,1,0.36,1);
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.92) translateY(16px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal h3 { font-size: 1rem; font-weight: 800; margin-bottom: 18px; color: var(--blue); }
+  .modal-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+  }
+  .btn-outline {
+    padding: 9px 20px;
+    border: 1.5px solid var(--border);
+    background: white;
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .btn-primary {
+    padding: 9px 20px;
+    background: var(--blue);
+    border: none;
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: white;
+  }
+  .btn-primary:hover { background: var(--blue-dark); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">domino's<span>.</span></div>
+  <a href="#">Order</a>
+  <a href="#">Menu</a>
+  <a href="#">Hot Deals</a>
+  <a href="#">Locations</a>
+  <a href="#">Loyalty</a>
+</nav>
+
+<!-- PROGRESS -->
+<div class="progress-bar">
+  <div class="step done">
+    <div class="step-num">✓</div>
+    Choose Items
+  </div>
+  <div class="step-connector"></div>
+  <div class="step active">
+    <div class="step-num">2</div>
+    Review & Checkout
+  </div>
+  <div class="step-connector"></div>
+  <div class="step">
+    <div class="step-num">3</div>
+    Confirmation
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="page">
+  <div class="left-col">
+
+    <!-- STEP 1: Order Items -->
+    <div class="card">
+      <div class="card-header">
+        🍕 Step 1 — Your Order
+        <span class="step-badge">1 item</span>
+      </div>
+      <div class="card-body">
+        <div class="order-item">
+          <div class="item-img">🍕</div>
+          <div class="item-details">
+            <div class="item-name">The Loner</div>
+            <div class="item-sub">Flavor: Extravaganza Feast &nbsp;|&nbsp; Drink: 7UP</div>
+          </div>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <div class="qty-val" id="qtyVal">1</div>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+          <div class="item-price" id="itemPrice">PKR 318</div>
+          <button class="del-btn" title="Remove item">✕</button>
+        </div>
+        <button class="add-more-btn">+ Add More Items</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Drinks -->
+    <div class="card">
+      <div class="card-header">🥤 Step 2 — Add a Drink <span style="font-weight:400;opacity:0.7;text-transform:none;letter-spacing:0;font-size:0.8rem;">(optional)</span></div>
+      <div class="card-body">
+        <div class="drinks-grid">
+          <div class="drink-card selected" onclick="selectDrink(this)">
+            <div class="d-icon">🟢</div>
+            <div class="d-name">7UP</div>
+            <div class="d-price">Included</div>
+          </div>
+          <div class="drink-card" onclick="selectDrink(this)">
+            <div class="d-icon">🟠</div>
+            <div class="d-name">Miranda</div>
+            <div class="d-price">+PKR 60</div>
+          </div>
+          <div class="drink-card" onclick="selectDrink(this)">
+            <div class="d-icon">🔵</div>
+            <div class="d-name">Aquafina</div>
+            <div class="d-price">+PKR 50</div>
+          </div>
+          <div class="drink-card" onclick="selectDrink(this)">
+            <div class="d-icon">🟡</div>
+            <div class="d-name">Mountain Dew</div>
+            <div class="d-price">+PKR 60</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: Delivery Location — PRE-FILLED, editable -->
+    <div class="card">
+      <div class="card-header">📍 Step 3 — Delivery Location</div>
+      <div class="card-body">
+        <div class="prefilled-notice">
+          <span class="icon">✅</span>
+          Auto-filled from your saved address. Change only if ordering from a different outlet.
+        </div>
+
+        <!-- Pre-selected location block -->
+        <div class="location-selected" id="locationBlock">
+          <div class="location-icon">🏪</div>
+          <div class="location-info">
+            <strong>Domino's G11 Branch — G11 Markaz</strong>
+            <span>Islamabad &nbsp;·&nbsp; Cash on Delivery (COD)</span>
+          </div>
+          <button class="edit-loc-btn" onclick="openModal()">✏️ Change</button>
+        </div>
+
+        <!-- Payment Method -->
+        <label style="margin-bottom:10px; display:block;">Payment Method <span class="req">*</span></label>
+        <div class="payment-options">
+          <div class="pay-opt selected" onclick="selectPay(this)">
+            <div class="p-icon">💵</div>
+            <div>
+              <div class="p-label">Cash on Delivery</div>
+              <div class="p-sub">Pay when order arrives</div>
+            </div>
+            <div class="pay-check">✓</div>
+          </div>
+          <div class="pay-opt" onclick="selectPay(this)">
+            <div class="p-icon">💳</div>
+            <div>
+              <div class="p-label">Card / Online</div>
+              <div class="p-sub">Visa, Mastercard, JazzCash</div>
+            </div>
+            <div class="pay-check">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: Contact Info — PRE-FILLED -->
+    <div class="card">
+      <div class="card-header">👤 Step 4 — Your Information</div>
+      <div class="card-body">
+        <div class="prefilled-notice">
+          <span class="icon">✅</span>
+          Details loaded from your account. Edit if needed.
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>First Name <span class="req">*</span> <span class="prefilled-tag">Saved</span></label>
+            <input type="text" class="prefilled" value="Absar" id="fname" oninput="validateName('fname')">
+            <div class="valid-icon" id="fname-ok">✔</div>
+          </div>
+          <div class="field">
+            <label>Last Name <span class="req">*</span> <span class="prefilled-tag">Saved</span></label>
+            <input type="text" class="prefilled" value="Shahid" id="lname" oninput="validateName('lname')">
+            <div class="valid-icon" id="lname-ok">✔</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Email Address <span class="req">*</span> <span class="prefilled-tag">Saved</span></label>
+            <input type="email" class="prefilled" value="absar.shahid@email.com" id="email" oninput="validateEmail()">
+            <div class="valid-icon" id="email-ok">✔</div>
+            <div class="field-hint error-msg" id="email-err">Enter a valid email address</div>
+          </div>
+          <div class="field">
+            <label>Phone Number <span class="req">*</span> <span class="prefilled-tag">Saved</span></label>
+            <!-- FIX: Phone is pre-filled from account, not blank -->
+            <input type="tel" class="prefilled" value="0300-1234567" id="phone" oninput="validatePhone()">
+            <div class="valid-icon" id="phone-ok">✔</div>
+            <div class="field-hint error-msg" id="phone-err">Enter a valid phone number</div>
+          </div>
+        </div>
+
+        <!-- Shipping address — pre-filled, no redundant city dropdown -->
+        <div class="form-row single">
+          <div class="field">
+            <label>Delivery Address <span class="req">*</span> <span class="prefilled-tag">Saved</span></label>
+            <input type="text" class="prefilled" value="House 12, Street 5, G-11/2, Islamabad" id="address">
+            <!-- FIX: City is NOT asked again — already captured in Step 3 -->
+          </div>
+        </div>
+
+        <div class="form-row single">
+          <div class="field">
+            <label>Promotional Code <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+            <input type="text" placeholder="Enter promo code">
+            <div class="field-hint">Get a discount? Enter your code here.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left-col -->
+
+  <!-- SIDEBAR -->
+  <div class="summary-card">
+    <div class="summary-header">🧾 Order Summary</div>
+    <div class="summary-body">
+      <div class="summary-row">
+        <span class="label">The Loner × 1</span>
+        <span id="s-item">PKR 318</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">Drink (7UP)</span>
+        <span>Included</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">Taxes (16%)</span>
+        <span id="s-tax">PKR 51</span>
+      </div>
+      <div class="summary-row">
+        <span class="label">Delivery</span>
+        <span style="color:var(--green);font-weight:700">FREE</span>
+      </div>
+      <div class="summary-row total">
+        <span class="label">Total</span>
+        <span id="s-total">PKR 369</span>
+      </div>
+      <div class="summary-tax-note">Taxes included in total</div>
+      <button class="place-order-btn" onclick="placeOrder()">🍕 Place Order</button>
+      <div class="secure-note">🔒 Secure &amp; Encrypted Checkout</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE LOCATION MODAL -->
+<div class="modal-overlay" id="locationModal">
+  <div class="modal">
+    <h3>📍 Change Delivery Outlet</h3>
+    <div class="field" style="margin-bottom:14px">
+      <label>City <span class="req">*</span></label>
+      <select id="modalCity" onchange="updateBranches()">
+        <option value="islamabad">Islamabad</option>
+        <option value="lahore">Lahore</option>
+        <option value="karachi">Karachi</option>
+        <option value="peshawar">Peshawar</option>
+      </select>
+    </div>
+    <div class="field" style="margin-bottom:14px">
+      <label>Branch <span class="req">*</span></label>
+      <select id="modalBranch">
+        <option>G11 Branch — G11 Markaz</option>
+        <option>F-10 Branch — F-10 Markaz</option>
+        <option>Blue Area Branch</option>
+        <option>E-11 Branch</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Area</label>
+      <select id="modalArea">
+        <option>G11 Markaz</option>
+        <option>G11/1</option>
+        <option>G11/2</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveLocation()">Save Location</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const BASE_PRICE = 318;
+  const TAX_RATE  = 0.16;
+  let qty = 1;
+
+  function changeQty(delta) {
+    qty = Math.max(1, qty + delta);
+    document.getElementById('qtyVal').textContent = qty;
+    updatePrices();
+  }
+
+  function updatePrices() {
+    const subtotal = BASE_PRICE * qty;
+    const tax      = Math.round(subtotal * TAX_RATE);
+    const total    = subtotal + tax;
+    document.getElementById('itemPrice').textContent = 'PKR ' + subtotal;
+    document.getElementById('s-item').textContent   = 'PKR ' + subtotal;
+    document.getElementById('s-tax').textContent    = 'PKR ' + tax;
+    document.getElementById('s-total').textContent  = 'PKR ' + total;
+  }
+
+  function selectDrink(el) {
+    document.querySelectorAll('.drink-card').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function selectPay(el) {
+    document.querySelectorAll('.pay-opt').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function validateName(id) {
+    const el  = document.getElementById(id);
+    const ok  = document.getElementById(id + '-ok');
+    const val = el.value.trim();
+    el.classList.toggle('error', val.length < 2);
+    if (ok) ok.style.display = val.length >= 2 ? 'block' : 'none';
+  }
+
+  function validateEmail() {
+    const el  = document.getElementById('email');
+    const ok  = document.getElementById('email-ok');
+    const err = document.getElementById('email-err');
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value);
+    el.classList.toggle('error', !valid);
+    if (ok)  ok.style.display  = valid ? 'block' : 'none';
+    if (err) err.style.display = !valid && el.value ? 'block' : 'none';
+  }
+
+  function validatePhone() {
+    const el  = document.getElementById('phone');
+    const ok  = document.getElementById('phone-ok');
+    const err = document.getElementById('phone-err');
+    const valid = el.value.replace(/\D/g,'').length >= 10;
+    el.classList.toggle('error', !valid);
+    if (ok)  ok.style.display  = valid ? 'block' : 'none';
+    if (err) err.style.display = !valid && el.value ? 'block' : 'none';
+  }
+
+  function openModal()  { document.getElementById('locationModal').classList.add('open'); }
+  function closeModal() { document.getElementById('locationModal').classList.remove('open'); }
+
+  function saveLocation() {
+    const city   = document.getElementById('modalCity').value;
+    const branch = document.getElementById('modalBranch').value;
+    const area   = document.getElementById('modalArea').value;
+    const cityLabel = city.charAt(0).toUpperCase() + city.slice(1);
+    document.querySelector('.location-info strong').textContent = `Domino's ${branch}`;
+    document.querySelector('.location-info span').textContent   = `${cityLabel} · ${area} · Cash on Delivery (COD)`;
+    closeModal();
+  }
+
+  function updateBranches() {
+    const branches = {
+      islamabad: ['G11 Branch — G11 Markaz','F-10 Branch','Blue Area Branch','E-11 Branch'],
+      lahore:    ['DHA Branch','Gulberg Branch','Model Town Branch'],
+      karachi:   ['Clifton Branch','Defence Branch','Gulshan Branch'],
+      peshawar:  ['University Town Branch','Hayatabad Branch'],
+    };
+    const sel = document.getElementById('modalBranch');
+    const city = document.getElementById('modalCity').value;
+    sel.innerHTML = branches[city].map(b => `<option>${b}</option>`).join('');
+  }
+
+  function placeOrder() {
+    alert('✅ Order placed successfully!\n\nYour Domino\'s pizza is on its way. Estimated delivery: 30–40 mins 🍕');
+  }
+</script>
+</body>
+</html>
